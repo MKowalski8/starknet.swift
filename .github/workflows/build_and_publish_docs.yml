@@ -15,10 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+      - uses: swift-actions/setup-swift@v3
         with:
-          xcode-version: '16.2.0'
+          swift-version: "6.1"
 
       - name: Build docs
         run: |

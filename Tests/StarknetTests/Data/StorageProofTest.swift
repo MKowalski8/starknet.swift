@@ -90,8 +90,9 @@ final class StorageProofTests: XCTestCase {
         let classHashes = [Felt(0x12), Felt(0x34)]
         let contractAddresses = [Felt(0x56), Felt(0x78)]
         let contractsStorageKeys = [
-            StarknetContractsStorageKeys(contractAddress: Felt(0x11), storageKeys: [Felt(0x22), Felt(0x33)]),
-            StarknetContractsStorageKeys(contractAddress: Felt(0x44), storageKeys: [Felt(0x55), Felt(0x66)]),
+            // Test different possible StorageKey initializers
+            StarknetContractsStorageKeys(contractAddress: Felt(0x11), storageKeys: [StarknetStorageKey(fromFelt: Felt(0x22))!, StarknetStorageKey(fromFelt: Felt(0x33))!]),
+            StarknetContractsStorageKeys(contractAddress: Felt(0x44), storageKeys: [StarknetStorageKey("0x55")!, StarknetStorageKey("0x66")!]),
         ]
 
         let params = GetStorageProofParams(blockId: blockId, classHashes: classHashes, contractAddresses: contractAddresses, contractsStorageKeys: contractsStorageKeys)
@@ -101,5 +102,21 @@ final class StorageProofTests: XCTestCase {
         let expected = #"{"contract_addresses":["0x56","0x78"],"class_hashes":["0x12","0x34"],"block_id":"latest","contracts_storage_keys":[{"contract_address":"0x11","storage_keys":["0x22","0x33"]},{"contract_address":"0x44","storage_keys":["0x55","0x66"]}]}"#
 
         XCTAssertEqualJSON(json, expected)
+    }
+
+    func testStorageKeyHappyCase() {
+        let case1 = StarknetStorageKey("0x0")!
+        XCTAssertEqual(case1.value, "0x0")
+
+        let case2 = StarknetStorageKey("0x7abcdef")!
+        XCTAssertEqual(case2.value, "0x7abcdef")
+
+        let case3 = StarknetStorageKey("0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")!
+        XCTAssertEqual(case3.value, "0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+    }
+
+    func testStorageKeyValueExceedsLimit() {
+        XCTAssertNil(StarknetStorageKey("0x8ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
+        XCTAssertNil(StarknetStorageKey("0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaa"))
     }
 }

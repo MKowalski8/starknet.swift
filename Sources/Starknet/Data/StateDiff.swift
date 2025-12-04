@@ -6,6 +6,7 @@ public struct StarknetStateDiff: Decodable, Equatable {
     public let declaredClasses: [StarknetDeclaredClassItem]
     public let deployedContracts: [StarknetDeployedContractItem]
     public let replacedClasses: [StarknetReplacedClassItem]
+    public let migratedCompiledClasses: [StarknetMigratedCompiledClassesItem]
     public let nonces: [StarknetNonceUpdateItem]
 
     enum CodingKeys: String, CodingKey {
@@ -14,6 +15,7 @@ public struct StarknetStateDiff: Decodable, Equatable {
         case declaredClasses = "declared_classes"
         case deployedContracts = "deployed_contracts"
         case replacedClasses = "replaced_classes"
+        case migratedCompiledClasses = "migrated_compiled_classes"
         case nonces
     }
 }
