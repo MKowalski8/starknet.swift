@@ -135,8 +135,6 @@ final class ProviderTests: XCTestCase {
     }
 
     func testGetEvents() async throws {
-        throw XCTSkip("TODO(#260)")
-
         let contract = try await ProviderTests.devnetClient.declareDeployContract(contractName: "Events")
         let invokeResult = try await ProviderTests.devnetClient.invokeContract(contractAddress: contract.deploy.contractAddress, function: "emit_event", calldata: [1])
 
@@ -164,10 +162,10 @@ final class ProviderTests: XCTestCase {
     func testGetTransactionByHash() async throws {
         let previousResult = try await provider.send(request: RequestBuilder.getTransactionBy(blockId: .tag(.latest), index: 0))
 
-        let _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: previousResult.transaction.hash!))
+        _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: previousResult.transaction.hash!))
 
         do {
-            let _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: "0x123"))
+            _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: "0x123"))
             XCTFail("Fetching transaction with nonexistent hash should fail")
         } catch {}
     }
@@ -238,12 +236,12 @@ final class ProviderTests: XCTestCase {
         let params2 = StarknetInvokeParamsV3(nonce: Felt(nonce.value + 1)!, resourceBounds: StarknetResourceBoundsMapping.zero)
         let tx2 = try account.signV3(calls: [call, call2], params: params2, forFeeEstimation: true)
 
-        let _ = try await provider.send(request: RequestBuilder.estimateFee(for: [tx1, tx2], simulationFlags: []))
+        _ = try await provider.send(request: RequestBuilder.estimateFee(for: [tx1, tx2], simulationFlags: []))
 
         let tx1WithoutSignature = StarknetInvokeTransactionV3(senderAddress: tx1.senderAddress, calldata: tx1.calldata, signature: [], resourceBounds: tx1.resourceBounds, nonce: nonce, forFeeEstimation: true)
         let tx2WithoutSignature = StarknetInvokeTransactionV3(senderAddress: tx2.senderAddress, calldata: tx2.calldata, signature: [], resourceBounds: tx2.resourceBounds, nonce: Felt(nonce.value + 1)!, forFeeEstimation: true)
 
-        let _ = try await provider.send(request: RequestBuilder.estimateFee(for: [tx1WithoutSignature, tx2WithoutSignature], simulationFlags: [.skipValidate]))
+        _ = try await provider.send(request: RequestBuilder.estimateFee(for: [tx1WithoutSignature, tx2WithoutSignature], simulationFlags: [.skipValidate]))
     }
 
     func testEstimateDeployAccountV3Fee() async throws {
@@ -261,11 +259,11 @@ final class ProviderTests: XCTestCase {
 
         let tx = try newAccount.signDeployAccountV3(classHash: accountContractClassHash, calldata: [newPublicKey], salt: .zero, params: params, forFeeEstimation: true)
 
-        let _ = try await provider.send(request: RequestBuilder.estimateFee(for: tx))
+        _ = try await provider.send(request: RequestBuilder.estimateFee(for: tx))
 
         let txWithoutSignature = StarknetDeployAccountTransactionV3(signature: [], resourceBounds: tx.resourceBounds, nonce: tx.nonce, contractAddressSalt: tx.contractAddressSalt, constructorCalldata: tx.constructorCalldata, classHash: tx.classHash, forFeeEstimation: true)
 
-        let _ = try await provider.send(request: RequestBuilder.estimateFee(for: txWithoutSignature, simulationFlags: [.skipValidate]))
+        _ = try await provider.send(request: RequestBuilder.estimateFee(for: txWithoutSignature, simulationFlags: [.skipValidate]))
     }
 
     func testEstimateMessageFee() async throws {
@@ -294,8 +292,6 @@ final class ProviderTests: XCTestCase {
     }
 
     func testSimulateTransactionsV3() async throws {
-        throw XCTSkip("TODO(#260)")
-
         let contract = try await ProviderTests.devnetClient.declareDeployContract(contractName: "Balance", constructorCalldata: [1000])
 
         let nonce = try await provider.send(request: account.getNonce())
@@ -374,7 +370,7 @@ final class ProviderTests: XCTestCase {
         XCTAssertEqual(try transactionsResponse[0].get().transaction.hash, invokeTx.transaction.hash!)
 
         do {
-            let _ = try transactionsResponse[1].get().transaction.hash
+            _ = try transactionsResponse[1].get().transaction.hash
             XCTFail("Fetching transaction with nonexistent hash should fail")
         } catch let error as StarknetProviderError {
             switch error {
