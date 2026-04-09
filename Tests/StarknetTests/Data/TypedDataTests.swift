@@ -219,7 +219,7 @@ final class TypedDataTests: XCTestCase {
     }
 
     func testEncodeI128() throws {
-        let cases: [(any Encodable, Felt)] = [
+        let cases: [(any Encodable, Felt)] = try [
             (0, .zero),
             (1, .one),
             (1_000_000, 1_000_000),
@@ -227,10 +227,10 @@ final class TypedDataTests: XCTestCase {
             ("0x1", .one),
             ("0x3e8", 1000),
             ((BigUInt(2).power(127) - 1).description, Felt(BigUInt(2).power(127) - 1)!),
-            (-1, Felt(fromSigned: -1)!),
-            (-1_000_000, Felt(fromSigned: -1_000_000)!),
-            ("-1", Felt(fromSigned: -1)!),
-            ((-BigInt(2).power(127)).description, Felt(fromSigned: -BigInt(2).power(127))!),
+            (-1, XCTUnwrap(Felt(fromSigned: -1))),
+            (-1_000_000, XCTUnwrap(Felt(fromSigned: -1_000_000))),
+            ("-1", XCTUnwrap(Felt(fromSigned: -1))),
+            ((-BigInt(2).power(127)).description, XCTUnwrap(Felt(fromSigned: -BigInt(2).power(127)))),
         ]
 
         for (input, expected) in cases {

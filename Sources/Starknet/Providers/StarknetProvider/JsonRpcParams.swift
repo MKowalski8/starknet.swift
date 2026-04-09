@@ -38,7 +38,7 @@ struct AddInvokeTransactionParams: Encodable {
     }
 }
 
-// Workaround to allow encoding polymorphic array
+/// Workaround to allow encoding polymorphic array
 struct WrappedExecutableTransaction: Encodable {
     let transaction: any StarknetExecutableTransaction
 

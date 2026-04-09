@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class FeeEstimateTests: XCTestCase {
     let feeEstimate = StarknetFeeEstimate(
@@ -33,13 +32,13 @@ final class FeeEstimateTests: XCTestCase {
             l2Gas: StarknetResourceBounds(maxAmount: 45, maxPricePerUnit: 600),
             l1DataGas: StarknetResourceBounds(maxAmount: 75, maxPricePerUnit: 900)
         )
-        XCTAssertEqual(resourceBounds!.l1Gas.maxAmount, expected.l1Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxAmount, expected.l2Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!, expected)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxAmount, expected.l1Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxAmount, expected.l2Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds, expected)
     }
 
     func testEstimateFeeToResourceBoundsWithSpecificMultiplier() {
@@ -50,13 +49,13 @@ final class FeeEstimateTests: XCTestCase {
             l2Gas: StarknetResourceBounds(maxAmount: 60, maxPricePerUnit: 1200),
             l1DataGas: StarknetResourceBounds(maxAmount: 100, maxPricePerUnit: 1800)
         )
-        XCTAssertEqual(resourceBounds!.l1Gas.maxAmount, expected.l1Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxAmount, expected.l2Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!, expected)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxAmount, expected.l1Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxAmount, expected.l2Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds, expected)
     }
 
     func testEstimateFeeToResourceBoundsWithNeutralMultiplier() {
@@ -67,12 +66,12 @@ final class FeeEstimateTests: XCTestCase {
             l2Gas: StarknetResourceBounds(maxAmount: 30, maxPricePerUnit: 400),
             l1DataGas: StarknetResourceBounds(maxAmount: 50, maxPricePerUnit: 600)
         )
-        XCTAssertEqual(resourceBounds!.l1Gas.maxAmount, expected.l1Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxAmount, expected.l2Gas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
-        XCTAssertEqual(resourceBounds!.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
-        XCTAssertEqual(resourceBounds!, expected)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxAmount, expected.l1Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1Gas.maxPricePerUnit, expected.l1Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxAmount, expected.l2Gas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l2Gas.maxPricePerUnit, expected.l2Gas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxAmount, expected.l1DataGas.maxAmount)
+        XCTAssertEqual(resourceBounds?.l1DataGas.maxPricePerUnit, expected.l1DataGas.maxPricePerUnit)
+        XCTAssertEqual(resourceBounds, expected)
     }
 }

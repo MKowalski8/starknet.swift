@@ -1,9 +1,8 @@
+@testable import Starknet
 import XCTest
 
-@testable import Starknet
-
 final class TransactionStatusTests: XCTestCase {
-    func testGetTransactionStatusResponse() async throws {
+    func testGetTransactionStatusResponse() throws {
         let json = """
         {"finality_status":"PRE_CONFIRMED"}
         """.data(using: .utf8)!

@@ -54,9 +54,9 @@ public class StarknetProvider: StarknetProviderProtocol {
         return result
     }
 
-    public func send<U>(
+    public func send<U: Decodable>(
         requests: [StarknetRequest<U>]
-    ) async throws -> [Result<U, StarknetProviderError>] where U: Decodable {
+    ) async throws -> [Result<U, StarknetProviderError>] {
         guard !requests.isEmpty else {
             throw StarknetProviderError.emptyBatchRequestError
         }
@@ -75,9 +75,9 @@ public class StarknetProvider: StarknetProviderProtocol {
         return orderRpcResults(rpcResponses: rpcResponses)
     }
 
-    public func send<U>(
+    public func send<U: Decodable>(
         requests: StarknetRequest<U>...
-    ) async throws -> [Result<U, StarknetProviderError>] where U: Decodable {
+    ) async throws -> [Result<U, StarknetProviderError>] {
         try await send(requests: requests)
     }
 }

@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class StarknetChainIdTests: XCTestCase {
     static var chainIdCases: [(StarknetChainId, String, String)] = []

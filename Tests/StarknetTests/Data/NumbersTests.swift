@@ -1,8 +1,6 @@
-import XCTest
-
 import BigInt
-
 @testable import Starknet
+import XCTest
 
 final class NumbersTests: XCTestCase {
     static let casesCount = 1000
@@ -165,12 +163,12 @@ final class NumbersTests: XCTestCase {
         XCTAssertEqual(numAsHex4, NumAsHex(0))
     }
 
-    func testShortStringEncoding() {
-        let encoded = Felt(fromHex: "0x68656c6c6f")!.toShortString()
+    func testShortStringEncoding() throws {
+        let encoded = try XCTUnwrap(Felt(fromHex: "0x68656c6c6f")?.toShortString())
 
         XCTAssertEqual("hello", encoded)
 
-        let encoded_padding = Felt(fromHex: "0xa68656c6c6f")!.toShortString()
+        let encoded_padding = try XCTUnwrap(Felt(fromHex: "0xa68656c6c6f")?.toShortString())
 
         XCTAssertEqual(encoded_padding, "\nhello")
     }
@@ -178,7 +176,7 @@ final class NumbersTests: XCTestCase {
     func testShortStringDecoding() {
         let decoded = Felt.fromShortString("hello")
 
-        XCTAssertEqual(decoded, Felt(fromHex: "0x68656c6c6f")!)
+        XCTAssertEqual(decoded, Felt(fromHex: "0x68656c6c6f"))
 
         let decodedEmptyString = Felt.fromShortString("")
 

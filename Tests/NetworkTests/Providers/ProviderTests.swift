@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class ProviderTests: XCTestCase {
     var provider: StarknetProviderProtocol!
@@ -44,7 +43,7 @@ final class ProviderTests: XCTestCase {
     }
 
     func testGetBlockWithTxsWithBlockHash() async throws {
-        let blockHash = Felt(fromHex: "0x05d95c778dad488e15f6a279c77c59322ad61eabf085cd8624ff5b39ca5ae8d8")!
+        let blockHash = try XCTUnwrap(Felt(fromHex: "0x05d95c778dad488e15f6a279c77c59322ad61eabf085cd8624ff5b39ca5ae8d8"))
         let result = try await provider.send(request: RequestBuilder.getBlockWithTxs(blockHash))
 
         if case let .processed(processedBlock) = result {

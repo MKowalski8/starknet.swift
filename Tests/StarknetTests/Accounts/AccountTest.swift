@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class AccountTests: XCTestCase {
     static var devnetClient: DevnetClientProtocol!
@@ -41,7 +40,7 @@ final class AccountTests: XCTestCase {
         }
     }
 
-    func testGetNonce() async throws {
+    func testGetNonce() async {
         _ = await (try? provider.send(request: account.getNonce()))
     }
 
@@ -140,7 +139,7 @@ final class AccountTests: XCTestCase {
     }
 
     func testDeployAccountV3() async throws {
-        let newSigner = StarkCurveSigner(privateKey: 4567)!
+        let newSigner = try XCTUnwrap(StarkCurveSigner(privateKey: 4567))
         let newPublicKey = newSigner.publicKey
         let newAccountAddress = StarknetContractAddressCalculator.calculateFrom(classHash: accountContractClassHash, calldata: [newPublicKey], salt: .zero)
         let newAccount = StarknetAccount(address: newAccountAddress, signer: newSigner, provider: provider, chainId: chainId, cairoVersion: .zero)
@@ -165,7 +164,7 @@ final class AccountTests: XCTestCase {
     }
 
     func testDeployAccountV3WithTip() async throws {
-        let newSigner = StarkCurveSigner(privateKey: 4444)!
+        let newSigner = try XCTUnwrap(StarkCurveSigner(privateKey: 4444))
         let newPublicKey = newSigner.publicKey
         let newAccountAddress = StarknetContractAddressCalculator.calculateFrom(classHash: accountContractClassHash, calldata: [newPublicKey], salt: .one)
         let newAccount = StarknetAccount(address: newAccountAddress, signer: newSigner, provider: provider, chainId: chainId, cairoVersion: .zero)

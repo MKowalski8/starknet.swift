@@ -1,24 +1,22 @@
-import XCTest
-
 import BigInt
-
 @testable import CryptoToolkit
 @testable import Starknet
+import XCTest
 
 private let privateKey = Felt(fromHex: "0x4070e7abfa479cf8a30d38895e93800a88862c4a65aa00e2b11495998818046")!
 private let publicKey = Felt(fromHex: "0x7697f8f9a4c3e2b1efd882294462fda2ca9c439d02a3a04cf0a0cdb627f11ee")!
 
 final class StarknetCurveTests: XCTestCase {
     func testSign() throws {
-        let privateKey = Felt(fromHex: "0x0139fe4d6f02e666e86a6f58e65060f115cd3c185bd9e98bd829636931458f79")!
-        let publicKey = Felt(fromHex: "0x02c5dbad71c92a45cc4b40573ae661f8147869a91d57b8d9b8f48c8af7f83159")!
+        let privateKey = try XCTUnwrap(Felt(fromHex: "0x0139fe4d6f02e666e86a6f58e65060f115cd3c185bd9e98bd829636931458f79"))
+        let publicKey = try XCTUnwrap(Felt(fromHex: "0x02c5dbad71c92a45cc4b40573ae661f8147869a91d57b8d9b8f48c8af7f83159"))
 
-        let hash = Felt(fromHex: "0x06fea80189363a786037ed3e7ba546dad0ef7de49fccae0e31eb658b7dd4ea76")!
+        let hash = try XCTUnwrap(Felt(fromHex: "0x06fea80189363a786037ed3e7ba546dad0ef7de49fccae0e31eb658b7dd4ea76"))
 
         let signature = try StarknetCurve.sign(privateKey: privateKey, hash: hash)
 
-        let r = Felt(fromHex: "0x061ec782f76a66f6984efc3a1b6d152a124c701c00abdd2bf76641b4135c770f")!
-        let s = Felt(fromHex: "0x04e44e759cea02c23568bb4d8a09929bbca8768ab68270d50c18d214166ccd9a")!
+        let r = try XCTUnwrap(Felt(fromHex: "0x061ec782f76a66f6984efc3a1b6d152a124c701c00abdd2bf76641b4135c770f"))
+        let s = try XCTUnwrap(Felt(fromHex: "0x04e44e759cea02c23568bb4d8a09929bbca8768ab68270d50c18d214166ccd9a"))
 
         XCTAssertEqual(signature.r, r)
         XCTAssertEqual(signature.s, s)
@@ -27,12 +25,12 @@ final class StarknetCurveTests: XCTestCase {
     }
 
     func testSignWithK() throws {
-        let hash = Felt(fromHex: "0x052fc40e34aee86948cd47e1a0096fa67df8410f81421f314a1eb18102251a82")!
+        let hash = try XCTUnwrap(Felt(fromHex: "0x052fc40e34aee86948cd47e1a0096fa67df8410f81421f314a1eb18102251a82"))
 
-        let signature = try StarknetCurve.sign(privateKey: privateKey, hash: hash, k: Felt(fromHex: "0x6d45bce40ffc4a8cd4cb656048d023a90913e70e589362b41e4334c721cec4b")!.value)
+        let signature = try StarknetCurve.sign(privateKey: privateKey, hash: hash, k: XCTUnwrap(Felt(fromHex: "0x6d45bce40ffc4a8cd4cb656048d023a90913e70e589362b41e4334c721cec4b")?.value))
 
-        let r = Felt(fromHex: "0x76a835cfbccd598b9429f6fce09acace91001abcfa68c36022e42dbdb024385")!
-        let s = Felt(fromHex: "0x198ef0ca145ad0fbd175426788d9a7c84de3764f51bfc0fe0579caca660bfe4")!
+        let r = try XCTUnwrap(Felt(fromHex: "0x76a835cfbccd598b9429f6fce09acace91001abcfa68c36022e42dbdb024385"))
+        let s = try XCTUnwrap(Felt(fromHex: "0x198ef0ca145ad0fbd175426788d9a7c84de3764f51bfc0fe0579caca660bfe4"))
 
         XCTAssertEqual(signature.r, r)
         XCTAssertEqual(signature.s, s)
@@ -40,7 +38,7 @@ final class StarknetCurveTests: XCTestCase {
         XCTAssertTrue(try StarknetCurve.verify(publicKey: publicKey, hash: hash, r: signature.r, s: signature.s))
     }
 
-    func testPedersen() throws {
+    func testPedersen() {
         let maxFelt = Felt(Felt.prime - BigUInt(1))!
 
         let cases: [(Felt, Felt, Felt)] = [
@@ -79,7 +77,7 @@ final class StarknetCurveTests: XCTestCase {
         }
     }
 
-    func testPedersenOnElements() throws {
+    func testPedersenOnElements() {
         let cases: [([Felt], Felt)] = [
             ([], "0x49ee3eba8c1600700ee1b87eb599f16716b0b1022947733551fde4050ca6804"),
             ([123_782_376, 213_984, 128_763_521_321], "0x7b422405da6571242dfc245a43de3b0fe695e7021c148b918cd9cdb462cac59"),
@@ -108,8 +106,8 @@ final class StarknetCurveTests: XCTestCase {
     }
 
     func testVerify() throws {
-        let r = Felt(fromHex: "0x66f8955f5c4cbad5c21905ca2a968bc32a183e81069b851b7fc388eceaf57f1")!
-        let s = Felt(fromHex: "0x13d5af50c934213f27a8cc5863aa304165aa886487fcc575fe6e1228879f9fe")!
+        let r = try XCTUnwrap(Felt(fromHex: "0x66f8955f5c4cbad5c21905ca2a968bc32a183e81069b851b7fc388eceaf57f1"))
+        let s = try XCTUnwrap(Felt(fromHex: "0x13d5af50c934213f27a8cc5863aa304165aa886487fcc575fe6e1228879f9fe"))
 
         let positiveResult = try StarknetCurve.verify(publicKey: publicKey, hash: 1, r: r, s: s)
 

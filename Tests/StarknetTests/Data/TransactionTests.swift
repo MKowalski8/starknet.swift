@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 let invokeTransactionV3 = """
 {
@@ -208,7 +207,7 @@ final class TransactionTests: XCTestCase {
         let encoder = JSONEncoder()
 
         let encoded = try encoder.encode(invoke)
-        let encodedString = String(data: encoded, encoding: .utf8)!
+        let encodedString = try XCTUnwrap(String(data: encoded, encoding: .utf8))
 
         let pairs = [
             "\"sender_address\":\"0x123\"",

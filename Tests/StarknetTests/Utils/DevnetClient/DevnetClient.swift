@@ -119,8 +119,8 @@ extension DevnetClientProtocol {
     }
 }
 
-// Due to DevnetClient being albe to run only on a macos, this
-// factory method will throw, when ran on any other platform.
+/// Due to DevnetClient being albe to run only on a macos, this
+/// factory method will throw, when ran on any other platform.
 func makeDevnetClient() -> DevnetClientProtocol {
     #if os(macOS)
         return DevnetClient()

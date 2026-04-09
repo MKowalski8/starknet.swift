@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class TipTests: XCTestCase {
     var provider: StarknetProviderProtocol!
@@ -47,7 +46,7 @@ final class TipTests: XCTestCase {
         let session = makeMockedURLSession(data: json)
         let provider = StarknetProvider(url: "https://node.url", urlSession: session)
 
-        let tip = try await estimateTip(provider: provider!)
+        let tip = try await estimateTip(provider: XCTUnwrap(provider))
         XCTAssertEqual(tip, UInt64AsHex.zero)
     }
 
@@ -188,7 +187,7 @@ final class TipTests: XCTestCase {
         let session = makeMockedURLSession(data: json)
         let provider = StarknetProvider(url: "https://node.url", urlSession: session)
 
-        let tip = try await estimateTip(provider: provider!)
+        let tip = try await estimateTip(provider: XCTUnwrap(provider))
         XCTAssertEqual(tip, UInt64AsHex(200))
     }
 
@@ -360,7 +359,7 @@ final class TipTests: XCTestCase {
         let session = makeMockedURLSession(data: json)
         let provider = StarknetProvider(url: "https://node.url", urlSession: session)
 
-        let tip = try await estimateTip(provider: provider!)
+        let tip = try await estimateTip(provider: XCTUnwrap(provider))
         XCTAssertEqual(tip, UInt64AsHex(250))
     }
 
@@ -515,7 +514,7 @@ final class TipTests: XCTestCase {
         let session = makeMockedURLSession(data: json)
         let provider = StarknetProvider(url: "https://node.url", urlSession: session)
 
-        let tip = try await estimateTip(provider: provider!)
+        let tip = try await estimateTip(provider: XCTUnwrap(provider))
         XCTAssertEqual(tip, UInt64AsHex(200))
     }
 }

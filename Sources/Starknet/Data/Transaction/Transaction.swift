@@ -649,10 +649,10 @@ extension StarknetExecutableTransaction {
     }
 }
 
-// Default deserializer doesn't check if the fields with default values match what is deserialized.
-// It's an extension that resolves this.
+/// Default deserializer doesn't check if the fields with default values match what is deserialized.
+/// It's an extension that resolves this.
 extension StarknetTransaction {
-    func verifyTransactionType<T>(container: KeyedDecodingContainer<T>, codingKeysType _: T.Type) throws where T: CodingKey {
+    func verifyTransactionType<T: CodingKey>(container: KeyedDecodingContainer<T>, codingKeysType _: T.Type) throws {
         let type = try container.decode(StarknetTransactionType.self, forKey: T(stringValue: "type")!)
 
         guard type == self.type else {
@@ -660,7 +660,7 @@ extension StarknetTransaction {
         }
     }
 
-    func verifyTransactionVersion<T>(container: KeyedDecodingContainer<T>, codingKeysType _: T.Type) throws where T: CodingKey {
+    func verifyTransactionVersion<T: CodingKey>(container: KeyedDecodingContainer<T>, codingKeysType _: T.Type) throws {
         let version = try container.decode(StarknetTransactionVersion.self, forKey: T(stringValue: "version")!)
 
         guard version == self.version else {

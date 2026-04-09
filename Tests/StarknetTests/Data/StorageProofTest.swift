@@ -1,9 +1,8 @@
+@testable import Starknet
 import XCTest
 
-@testable import Starknet
-
-// We need to compare the parsed JSON structures rather than raw strings because JSONEncoder
-// does not guarantee key order in the output, hence comparing JSON strings directly is unreliable.
+/// We need to compare the parsed JSON structures rather than raw strings because JSONEncoder
+/// does not guarantee key order in the output, hence comparing JSON strings directly is unreliable.
 func XCTAssertEqualJSON(_ json1: String, _ json2: String, file: StaticString = #file, line: UInt = #line) {
     guard
         let data1 = json1.data(using: .utf8),
@@ -19,7 +18,7 @@ func XCTAssertEqualJSON(_ json1: String, _ json2: String, file: StaticString = #
 }
 
 final class StorageProofTests: XCTestCase {
-    func testGetStorageProofResponse() async throws {
+    func testGetStorageProofResponse() throws {
         let json = """
         {
             "id": 0,
@@ -89,29 +88,29 @@ final class StorageProofTests: XCTestCase {
         let blockId = StarknetBlockId.tag(.latest)
         let classHashes = [Felt(0x12), Felt(0x34)]
         let contractAddresses = [Felt(0x56), Felt(0x78)]
-        let contractsStorageKeys = [
+        let contractsStorageKeys = try [
             // Test different possible StorageKey initializers
-            StarknetContractsStorageKeys(contractAddress: Felt(0x11), storageKeys: [StarknetStorageKey(fromFelt: Felt(0x22))!, StarknetStorageKey(fromFelt: Felt(0x33))!]),
-            StarknetContractsStorageKeys(contractAddress: Felt(0x44), storageKeys: [StarknetStorageKey("0x55")!, StarknetStorageKey("0x66")!]),
+            StarknetContractsStorageKeys(contractAddress: Felt(0x11), storageKeys: [XCTUnwrap(StarknetStorageKey(fromFelt: Felt(0x22))), XCTUnwrap(StarknetStorageKey(fromFelt: Felt(0x33)))]),
+            StarknetContractsStorageKeys(contractAddress: Felt(0x44), storageKeys: [XCTUnwrap(StarknetStorageKey("0x55")), XCTUnwrap(StarknetStorageKey("0x66"))]),
         ]
 
         let params = GetStorageProofParams(blockId: blockId, classHashes: classHashes, contractAddresses: contractAddresses, contractsStorageKeys: contractsStorageKeys)
         let encoder = JSONEncoder()
         let data = try encoder.encode(params)
-        let json = String(data: data, encoding: .utf8)!
+        let json = try XCTUnwrap(String(data: data, encoding: .utf8))
         let expected = #"{"contract_addresses":["0x56","0x78"],"class_hashes":["0x12","0x34"],"block_id":"latest","contracts_storage_keys":[{"contract_address":"0x11","storage_keys":["0x22","0x33"]},{"contract_address":"0x44","storage_keys":["0x55","0x66"]}]}"#
 
         XCTAssertEqualJSON(json, expected)
     }
 
-    func testStorageKeyHappyCase() {
-        let case1 = StarknetStorageKey("0x0")!
+    func testStorageKeyHappyCase() throws {
+        let case1 = try XCTUnwrap(StarknetStorageKey("0x0"))
         XCTAssertEqual(case1.value, "0x0")
 
-        let case2 = StarknetStorageKey("0x7abcdef")!
+        let case2 = try XCTUnwrap(StarknetStorageKey("0x7abcdef"))
         XCTAssertEqual(case2.value, "0x7abcdef")
 
-        let case3 = StarknetStorageKey("0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")!
+        let case3 = try XCTUnwrap(StarknetStorageKey("0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
         XCTAssertEqual(case3.value, "0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
     }
 

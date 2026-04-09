@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class ProviderTests: XCTestCase {
     static var devnetClient: DevnetClientProtocol!
@@ -162,7 +161,7 @@ final class ProviderTests: XCTestCase {
     func testGetTransactionByHash() async throws {
         let previousResult = try await provider.send(request: RequestBuilder.getTransactionBy(blockId: .tag(.latest), index: 0))
 
-        _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: previousResult.transaction.hash!))
+        _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: XCTUnwrap(previousResult.transaction.hash)))
 
         do {
             _ = try await provider.send(request: RequestBuilder.getTransactionBy(hash: "0x123"))
@@ -245,7 +244,7 @@ final class ProviderTests: XCTestCase {
     }
 
     func testEstimateDeployAccountV3Fee() async throws {
-        let newSigner = StarkCurveSigner(privateKey: 3333)!
+        let newSigner = try XCTUnwrap(StarkCurveSigner(privateKey: 3333))
         let newPublicKey = newSigner.publicKey
         let newAccountAddress = StarknetContractAddressCalculator.calculateFrom(classHash: accountContractClassHash, calldata: [newPublicKey], salt: .zero)
         let newAccount = StarknetAccount(address: newAccountAddress, signer: newSigner, provider: provider, chainId: chainId, cairoVersion: .zero)
@@ -303,7 +302,7 @@ final class ProviderTests: XCTestCase {
         let invokeTx = try account.signV3(calls: [call], params: params, forFeeEstimation: false)
 
         let accountClassHash = try await provider.send(request: RequestBuilder.getClassHashAt(account.address))
-        let newSigner = StarkCurveSigner(privateKey: 3003)!
+        let newSigner = try XCTUnwrap(StarkCurveSigner(privateKey: 3003))
         let newPublicKey = newSigner.publicKey
         let newAccountAddress = StarknetContractAddressCalculator.calculateFrom(classHash: accountClassHash, calldata: [newPublicKey], salt: .zero)
         let newAccount = StarknetAccount(address: newAccountAddress, signer: newSigner, provider: provider, chainId: chainId, cairoVersion: .zero)
@@ -363,11 +362,11 @@ final class ProviderTests: XCTestCase {
         let invokeTx = try await provider.send(request: RequestBuilder.getTransactionBy(hash: transactionHash))
 
         let transactionsResponse = try await provider.send(requests:
-            RequestBuilder.getTransactionBy(hash: invokeTx.transaction.hash!),
+            RequestBuilder.getTransactionBy(hash: XCTUnwrap(invokeTx.transaction.hash)),
             RequestBuilder.getTransactionBy(hash: "0x123"))
 
         XCTAssertEqual(transactionsResponse.count, 2)
-        XCTAssertEqual(try transactionsResponse[0].get().transaction.hash, invokeTx.transaction.hash!)
+        XCTAssertEqual(try transactionsResponse[0].get().transaction.hash, invokeTx.transaction.hash)
 
         do {
             _ = try transactionsResponse[1].get().transaction.hash

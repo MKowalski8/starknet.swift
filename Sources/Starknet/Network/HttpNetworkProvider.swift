@@ -69,7 +69,7 @@ class HttpNetworkProvider {
         }
     }
 
-    func send<U>(payload: JsonRpcPayload, config: Configuration, receive _: U.Type) async throws -> U where U: Decodable {
+    func send<U: Decodable>(payload: JsonRpcPayload, config: Configuration, receive _: U.Type) async throws -> U {
         let encoded: Data = try encodePayload(payload: payload)
 
         let request = makeRequestWith(body: encoded, config: config)
@@ -79,14 +79,13 @@ class HttpNetworkProvider {
         }
 
         do {
-            let result = try JSONDecoder().decode(U.self, from: data)
-            return result
+            return try JSONDecoder().decode(U.self, from: data)
         } catch {
             try handleResponseError(error, response)
         }
     }
 
-    func send<U>(payload: [JsonRpcPayload], config: Configuration, receive _: [U.Type]) async throws -> [U] where U: Decodable {
+    func send<U: Decodable>(payload: [JsonRpcPayload], config: Configuration, receive _: [U.Type]) async throws -> [U] {
         let encoded: Data = try encodePayload(payload: payload)
 
         let request = makeRequestWith(body: encoded, config: config)
@@ -96,8 +95,7 @@ class HttpNetworkProvider {
         }
 
         do {
-            let result = try JSONDecoder().decode([U].self, from: data)
-            return result
+            return try JSONDecoder().decode([U].self, from: data)
         } catch {
             try handleResponseError(error, response)
         }

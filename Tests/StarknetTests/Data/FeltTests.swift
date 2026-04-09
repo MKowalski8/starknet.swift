@@ -1,8 +1,6 @@
-import XCTest
-
 import BigInt
-
 @testable import Starknet
+import XCTest
 
 final class FeltTests: XCTestCase {
     func testExpressibleByStringLiteral() {
@@ -42,12 +40,12 @@ final class FeltTests: XCTestCase {
         XCTAssertNil(Felt(fromSigned: -BigInt(Felt.prime)))
     }
 
-    func testShortStringEncoding() {
-        let encoded = Felt(fromHex: "0x68656c6c6f")!.toShortString()
+    func testShortStringEncoding() throws {
+        let encoded = try XCTUnwrap(Felt(fromHex: "0x68656c6c6f")?.toShortString())
 
         XCTAssertEqual("hello", encoded)
 
-        let encoded_padding = Felt(fromHex: "0xa68656c6c6f")!.toShortString()
+        let encoded_padding = try XCTUnwrap(Felt(fromHex: "0xa68656c6c6f")?.toShortString())
 
         XCTAssertEqual(encoded_padding, "\nhello")
     }
@@ -55,7 +53,7 @@ final class FeltTests: XCTestCase {
     func testShortStringDecoding() {
         let decoded = Felt.fromShortString("hello")
 
-        XCTAssertEqual(decoded, Felt(fromHex: "0x68656c6c6f")!)
+        XCTAssertEqual(decoded, Felt(fromHex: "0x68656c6c6f"))
 
         let decodedEmptyString = Felt.fromShortString("")
 

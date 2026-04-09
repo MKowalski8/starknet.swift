@@ -1,9 +1,8 @@
+@testable import Starknet
 import XCTest
 
-@testable import Starknet
-
 final class MessagesStatusTests: XCTestCase {
-    // TODO(#225)
+    /// TODO(#225)
     func testGetMessagesStatusResponse() throws {
         let json = """
         {
