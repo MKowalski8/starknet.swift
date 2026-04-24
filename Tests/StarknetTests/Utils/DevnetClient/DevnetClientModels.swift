@@ -107,9 +107,9 @@ struct DevnetMintRequest: Codable {
     }
 }
 
-// Simplified receipt that is intended to support any JSON-RPC version starting 0.3,
-// to avoid DevnetClient relying on StarknetTransactionReceipt.
-// Only use it for checking whether a transaction was successful.
+/// Simplified receipt that is intended to support any JSON-RPC version starting 0.3,
+/// to avoid DevnetClient relying on StarknetTransactionReceipt.
+/// Only use it for checking whether a transaction was successful.
 struct DevnetReceipt: Decodable {
     let status: StarknetTransactionStatus?
     let executionStatus: StarknetTransactionExecutionStatus?

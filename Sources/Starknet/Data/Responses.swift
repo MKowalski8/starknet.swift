@@ -144,6 +144,74 @@ public struct StarknetGetStorageProofResponse: Decodable, Equatable {
     }
 }
 
+public struct StarknetStateUpdate: Decodable, Equatable {
+    public let blockHash: Felt
+    public let newRoot: Felt
+    public let oldRoot: Felt
+    public let stateDiff: StarknetStateDiff
+
+    enum CodingKeys: String, CodingKey {
+        case blockHash = "block_hash"
+        case newRoot = "new_root"
+        case oldRoot = "old_root"
+        case stateDiff = "state_diff"
+    }
+}
+
+public struct StarknetPreConfirmedStateUpdate: Decodable, Equatable {
+    public let oldRoot: Felt
+    public let stateDiff: StarknetStateDiff
+
+    enum CodingKeys: String, CodingKey {
+        case oldRoot = "old_root"
+        case stateDiff = "state_diff"
+    }
+}
+
+public enum StarknetStateUpdateWrapper: Decodable {
+    case processed(StarknetStateUpdate)
+    case preConfirmed(StarknetPreConfirmedStateUpdate)
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if container.contains(.blockHash) {
+            self = try .processed(StarknetStateUpdate(from: decoder))
+        } else {
+            self = try .preConfirmed(StarknetPreConfirmedStateUpdate(from: decoder))
+        }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case blockHash = "block_hash"
+    }
+}
+
+public struct StarknetStorageResult: Decodable, Equatable {
+    public let value: Felt
+    public let lastUpdateBlock: UInt64
+
+    enum CodingKeys: String, CodingKey {
+        case value
+        case lastUpdateBlock = "last_update_block"
+    }
+}
+
+public enum StarknetStorageAtResult: Decodable, Equatable {
+    case value(Felt)
+    case withLastUpdateBlock(StarknetStorageResult)
+
+    public init(from decoder: Decoder) throws {
+        // STORAGE_RESULT always contains "last_update_block"; a plain FELT response does not.
+        if let container = try? decoder.container(keyedBy: StarknetStorageResult.CodingKeys.self),
+           container.contains(.lastUpdateBlock)
+        {
+            self = try .withLastUpdateBlock(StarknetStorageResult(from: decoder))
+        } else {
+            self = try .value(Felt(from: decoder))
+        }
+    }
+}
+
 public struct StarknetGetTransactionStatusResponse: Decodable, Equatable {
     public let finalityStatus: StarknetTransactionStatus
     public let executionStatus: StarknetTransactionExecutionStatus?

@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class StarknetMerkleNodeTests: XCTestCase {
     func testStarknetBinaryNode() throws {

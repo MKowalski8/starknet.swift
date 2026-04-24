@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class ExecutionTests: XCTestCase {
     static var devnetClient: DevnetClientProtocol!
@@ -38,7 +37,7 @@ final class ExecutionTests: XCTestCase {
         }
     }
 
-    func testStarknetCallsToExecuteCalldataCairo1() async throws {
+    func testStarknetCallsToExecuteCalldataCairo1() throws {
         let call1 = StarknetCall(
             contractAddress: balanceContractAddress,
             entrypoint: starknetSelector(from: "increase_balance"),

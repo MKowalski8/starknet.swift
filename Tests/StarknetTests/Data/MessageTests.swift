@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 final class MessageTests: XCTestCase {
     func testMessageToL1Decoding() throws {
@@ -50,7 +49,7 @@ final class MessageTests: XCTestCase {
         let encoder = JSONEncoder()
 
         let encodedMessageFromL1 = try encoder.encode(messageFromL1)
-        let encodedString = String(data: encodedMessageFromL1, encoding: .utf8)!
+        let encodedString = try XCTUnwrap(String(data: encodedMessageFromL1, encoding: .utf8))
 
         let pairs = [
             "\"from_address\":\"0xBe1259ff905cAdBbAA62514388b71BdEfB8aacC1\"",

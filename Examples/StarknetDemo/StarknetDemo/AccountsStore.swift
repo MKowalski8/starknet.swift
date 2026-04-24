@@ -9,7 +9,7 @@ import BigInt
 import Foundation
 import Starknet
 
-// Address of the native erc20 contract in starknet-devnet.
+/// Address of the native erc20 contract in starknet-devnet.
 let erc20ContractAddress: Felt = "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7"
 
 // In this demo, you can interact with two predeployed accounts.
@@ -19,7 +19,7 @@ let erc20ContractAddress: Felt = "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C7
 // If you used a different seed update private keys and account addresses accordingly.
 // If you used a different port, please change it below as well.
 
-// Address to the the rpc endpoint of a local devnet instance
+/// Address to the the rpc endpoint of a local devnet instance
 let rpcEndpoint = "http://127.0.0.1:5050/rpc"
 
 // !!! Important !!!

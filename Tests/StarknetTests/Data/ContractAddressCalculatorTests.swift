@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import Starknet
+import XCTest
 
 private typealias ChecksumTestCase = (
     notFormatted: String,
@@ -47,9 +46,9 @@ final class ContractAddressCalculatorTests: XCTestCase {
         XCTAssertEqual(Felt("3179899882984850239687045389724311807765146621017486664543269641150383510696"), addressWithDeployer)
     }
 
-    func testIsChecksumAddressValid() {
+    func testIsChecksumAddressValid() throws {
         for testCase in checksumAddresses {
-            let felt = Felt(fromHex: testCase.notFormatted)!
+            let felt = try XCTUnwrap(Felt(fromHex: testCase.notFormatted))
             let formatted = StarknetContractAddressCalculator.calculateChecksumAddress(address: felt)
             XCTAssertEqual(formatted, testCase.formatted)
         }

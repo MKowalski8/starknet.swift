@@ -38,7 +38,7 @@ struct AddInvokeTransactionParams: Encodable {
     }
 }
 
-// Workaround to allow encoding polymorphic array
+/// Workaround to allow encoding polymorphic array
 struct WrappedExecutableTransaction: Encodable {
     let transaction: any StarknetExecutableTransaction
 
@@ -123,19 +123,51 @@ struct GetStorageProofParams: Encodable {
 
 struct GetTransactionByHashParams: Encodable {
     let hash: Felt
+    let responseFlags: [StarknetTxnResponseFlag]
+
+    init(hash: Felt, responseFlags: [StarknetTxnResponseFlag] = []) {
+        self.hash = hash
+        self.responseFlags = responseFlags
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(hash, forKey: .hash)
+        if !responseFlags.isEmpty {
+            try container.encode(responseFlags, forKey: .responseFlags)
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case hash = "transaction_hash"
+        case responseFlags = "response_flags"
     }
 }
 
 struct GetTransactionByBlockIdAndIndex: Encodable {
     let blockId: StarknetBlockId
     let index: UInt64
+    let responseFlags: [StarknetTxnResponseFlag]
+
+    init(blockId: StarknetBlockId, index: UInt64, responseFlags: [StarknetTxnResponseFlag] = []) {
+        self.blockId = blockId
+        self.index = index
+        self.responseFlags = responseFlags
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(blockId, forKey: .blockId)
+        try container.encode(index, forKey: .index)
+        if !responseFlags.isEmpty {
+            try container.encode(responseFlags, forKey: .responseFlags)
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case blockId = "block_id"
         case index
+        case responseFlags = "response_flags"
     }
 }
 
@@ -187,9 +219,103 @@ struct SimulateTransactionsParams: Encodable {
 
 struct GetBlockWithTxsParams: Encodable {
     let blockId: StarknetBlockId
+    let responseFlags: [StarknetTxnResponseFlag]
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(blockId, forKey: .blockId)
+        if !responseFlags.isEmpty {
+            try container.encode(responseFlags, forKey: .responseFlags)
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case blockId = "block_id"
+        case responseFlags = "response_flags"
+    }
+}
+
+struct TraceBlockTransactionsParams: Encodable {
+    let blockId: StarknetBlockId
+    let traceFlags: Set<StarknetTraceFlag>
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(blockId, forKey: .blockId)
+        if !traceFlags.isEmpty {
+            try container.encode(traceFlags, forKey: .traceFlags)
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case blockId = "block_id"
+        case traceFlags = "trace_flags"
+    }
+}
+
+struct GetStorageAtParams: Encodable {
+    let contractAddress: Felt
+    let key: Felt
+    let blockId: StarknetBlockId
+    let responseFlags: [StarknetStorageResponseFlag]
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(contractAddress, forKey: .contractAddress)
+        try container.encode(key, forKey: .key)
+        try container.encode(blockId, forKey: .blockId)
+        if !responseFlags.isEmpty {
+            try container.encode(responseFlags, forKey: .responseFlags)
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case contractAddress = "contract_address"
+        case key
+        case blockId = "block_id"
+        case responseFlags = "response_flags"
+    }
+}
+
+struct GetBlockWithReceiptsParams: Encodable {
+    let blockId: StarknetBlockId
+    let responseFlags: [StarknetTxnResponseFlag]
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(blockId, forKey: .blockId)
+        if !responseFlags.isEmpty {
+            try container.encode(responseFlags, forKey: .responseFlags)
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case blockId = "block_id"
+        case responseFlags = "response_flags"
+    }
+}
+
+struct GetBlockWithTxHashesParams: Encodable {
+    let blockId: StarknetBlockId
+
+    enum CodingKeys: String, CodingKey {
+        case blockId = "block_id"
+    }
+}
+
+struct GetStateUpdateParams: Encodable {
+    let blockId: StarknetBlockId
+    let contractAddresses: [Felt]?
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(blockId, forKey: .blockId)
+        try container.encodeIfPresent(contractAddresses, forKey: .contractAddresses)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case blockId = "block_id"
+        case contractAddresses = "contract_addresses"
     }
 }
 
@@ -203,6 +329,7 @@ enum JsonRpcParams {
     case estimateMessageFee(EstimateMessageFeeParams)
     case addDeployAccountTransaction(AddDeployAccountTransactionParams)
     case getBlockWithTxs(GetBlockWithTxsParams)
+    case getBlockWithReceipts(GetBlockWithReceiptsParams)
     case getClassHashAt(GetClassHashAtParams)
     case getEvents(GetEventsPayload)
     case getStorageProof(GetStorageProofParams)
@@ -212,6 +339,10 @@ enum JsonRpcParams {
     case getTransactionStatus(GetTransactionStatusParams)
     case getMessagesStatus(GetMessagesStatusParams)
     case simulateTransactions(SimulateTransactionsParams)
+    case traceBlockTransactions(TraceBlockTransactionsParams)
+    case getStorageAt(GetStorageAtParams)
+    case getStateUpdate(GetStateUpdateParams)
+    case getBlockWithTxHashes(GetBlockWithTxHashesParams)
 }
 
 extension JsonRpcParams: Encodable {
@@ -235,6 +366,8 @@ extension JsonRpcParams: Encodable {
             try params.encode(to: encoder)
         case let .getBlockWithTxs(params):
             try params.encode(to: encoder)
+        case let .getBlockWithReceipts(params):
+            try params.encode(to: encoder)
         case let .getClassHashAt(params):
             try params.encode(to: encoder)
         case let .getEvents(params):
@@ -252,6 +385,14 @@ extension JsonRpcParams: Encodable {
         case let .getMessagesStatus(params):
             try params.encode(to: encoder)
         case let .simulateTransactions(params):
+            try params.encode(to: encoder)
+        case let .traceBlockTransactions(params):
+            try params.encode(to: encoder)
+        case let .getStorageAt(params):
+            try params.encode(to: encoder)
+        case let .getStateUpdate(params):
+            try params.encode(to: encoder)
+        case let .getBlockWithTxHashes(params):
             try params.encode(to: encoder)
         }
     }
